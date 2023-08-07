@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ShutDown" Id="{107fb3ae-5c98-443d-9a22-030f2796c1b3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ShutDown
+VAR_INPUT
+	fbUPS			:iUPS;				// UPS interface	
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	eShutdownMode	:E_ShutdownMode;	// State machine when shutting down
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// watch power fail
+fbUPS.watch_status();
+
+CASE fbUPS.UPSState OF 
+	E_UPSState.on_battery:
+		eShutdownMode := E_ShutdownMode.persistent_data;
+	E_UPSState.critical_error:
+		eShutdownMode := E_ShutdownMode.shutting_down;
+	ELSE
+		eShutdownMode := E_ShutdownMode.init;
+END_CASE
+
+CASE eShutdownMode OF 
+	E_ShutdownMode.persistent_data:
+		fbUPS.persist_data();
+		IF fbUPS.UPSState = E_UPSState.facility_error THEN
+			eShutdownMode := E_ShutdownMode.shutting_down;
+		END_IF
+	E_ShutdownMode.shutting_down:
+		fbUPS.shutdown();
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="FB_ShutDown">
+      <LineId Id="27" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="74" Count="1" />
+      <LineId Id="79" Count="5" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="54" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
