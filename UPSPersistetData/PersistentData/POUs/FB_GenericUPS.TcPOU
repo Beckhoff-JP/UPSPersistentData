@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_GenericUPS" Id="{cde44bd3-bf34-4547-83d5-45e53bbe73f8}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_GenericUPS IMPLEMENTS iUPS
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="persist_data" Id="{45ab1615-aefd-4eef-999b-6783725b4f04}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD persist_data : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="shutdown" Id="{ce1cc227-402c-4d0d-af5a-1144c1ce391e}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD shutdown : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="UPSState" Id="{977c4584-2f65-4f58-b857-efd1b92807d1}">
+      <Declaration><![CDATA[{warning 'add property implementation'}
+PROPERTY UPSState : E_UPSState
+]]></Declaration>
+      <Get Name="Get" Id="{b43077a2-2c3d-43c9-9c09-5b01941b8326}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{484f989f-8554-4520-a8da-7a44326dd89f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="watch_status" Id="{3d777f1e-d591-44f5-b313-af2e7cf7a433}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD watch_status : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_GenericUPS">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_GenericUPS.persist_data">
+      <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_GenericUPS.shutdown">
+      <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_GenericUPS.UPSState.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_GenericUPS.UPSState.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_GenericUPS.watch_status">
+      <LineId Id="4" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

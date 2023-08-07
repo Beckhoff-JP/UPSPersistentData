@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="iUPS" Id="{a3d4dadb-cbcc-45dc-9c32-777e8f010ae0}">
+    <Declaration><![CDATA[INTERFACE iUPS
+]]></Declaration>
+    <Method Name="persist_data" Id="{75e31577-948a-4c0e-a956-0acb791fdeba}">
+      <Declaration><![CDATA[(*
+Method of saving persistent data
+=================================================
+
+Author
+	: Takashi Ichihashi
+
+Date
+	: 02 Aug, 2023
+
+Overview
+===============
+
+This method is assumed that persistent values are saved when ups running without online power.
+"WritePersistentData" FB has to be executed explicily in case of GenericUPS is used. You might define this FB instance on this method.
+If you use "SUPS", it might be saved persistent data automatically when power failed, so nothing need to be defined on this method.
+
+*)
+METHOD persist_data : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="shutdown" Id="{cc96a78c-d834-4b2b-a85b-51732d332b57}">
+      <Declaration><![CDATA[METHOD shutdown : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="shutdown_delay" Id="{b6287d37-5af7-4592-877d-72d17bf7b41a}">
+      <Declaration><![CDATA[PROPERTY shutdown_delay : TIME]]></Declaration>
+      <Get Name="Get" Id="{90f23270-b879-4949-a87f-752d7c423c5c}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{7aa59039-fd9e-4e53-896c-55dc2e9b5c8b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="UPSState" Id="{b3b83b4b-f94c-4f6a-a48c-b02264ac592a}">
+      <Declaration><![CDATA[PROPERTY UPSState : E_UPSState]]></Declaration>
+      <Get Name="Get" Id="{0300f15b-e905-49b7-a86b-afff88d77d7c}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="watch_status" Id="{636be49c-911a-4fbc-aece-b7a3c5ae21c9}">
+      <Declaration><![CDATA[METHOD watch_status : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

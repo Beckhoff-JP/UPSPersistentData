@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SUPS_CX51x0" Id="{b4b054df-2fee-45cf-952c-887d313770a9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SUPS_CX51x0 IMPLEMENTS iUPS
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	eUPSState 		:E_UPSState;
+	tShutdownDelay	: TIME := T#1S;
+	fbShutdownTimer	:Tc2_Standard.TON;
+	fbS_UPS_CX51x0	:Tc2_SUPS.FB_S_UPS_CX51x0;
+	fbShutdown		:FB_NT_QuickShutdown;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="persist_data" Id="{d17af076-b64b-4b79-97ad-ee3f8f34dc2e}">
+      <Declaration><![CDATA[(*
+Method of saving persistent data
+=================================================
+
+Author
+	: Takashi Ichihashi
+
+Date
+	: 02 Aug, 2023
+
+Overview
+===============
+
+This method is assumed that persistent values are saved when ups running without online power.
+"WritePersistentData" FB has to be executed explicily in case of GenericUPS is used. You might define this FB instance on this method.
+If you use "SUPS", it might be saved persistent data automatically when power failed, so nothing need to be defined on this method.
+
+*)
+METHOD persist_data : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+IF fbS_UPS_CX51x0.eState = Tc2_SUPS.E_S_UPS_State.eSUPS_WaitForRecover THEN
+	fbShutdownTimer(IN:=fbS_UPS_CX51x0.bPowerFailDetect, PT:=tShutdownDelay);
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="shutdown" Id="{c980e6f7-b124-490f-9400-ac68c3f4f778}">
+      <Declaration><![CDATA[METHOD shutdown : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbShutdown(START := TRUE);]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="shutdown_delay" Id="{409d7a4c-a9f8-46ed-a420-03a3cf2c9120}">
+      <Declaration><![CDATA[{warning 'add property implementation'}
+PROPERTY shutdown_delay : TIME
+]]></Declaration>
+      <Get Name="Get" Id="{45179c0e-5f59-4905-9f64-9850d676612c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[shutdown_delay := tShutdownDelay;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{8a293298-ccba-481a-af90-2a77246775c1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[tShutdownDelay := shutdown_delay;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="UPSState" Id="{3b204e69-a47c-4d3e-a3fe-4a85409b15b2}">
+      <Declaration><![CDATA[PROPERTY UPSState : E_UPSState
+]]></Declaration>
+      <Get Name="Get" Id="{1873cacb-d2fd-4efd-825a-3c05dcd94287}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[UPSState := eUPSState;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="watch_status" Id="{b16cb55e-3876-471f-83da-f4ae29d82792}">
+      <Declaration><![CDATA[METHOD watch_status : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+fbS_UPS_CX51x0(eUpsMode := Tc2_SUPS.E_S_UPS_Mode.eSUPS_WrPersistData_NoShutdown);
+
+CASE fbS_UPS_CX51x0.eState OF
+	Tc2_SUPS.E_S_UPS_State.eSUPS_PowerOK:
+		eUPSState := E_UPSState.on_power;
+	Tc2_SUPS.E_S_UPS_State.eSUPS_PowerFailure:
+		eUPSState := E_UPSState.on_battery;
+	Tc2_SUPS.E_S_UPS_State.eSUPS_WritePersistentData:
+		eUPSState := E_UPSState.on_battery;
+	Tc2_SUPS.E_S_UPS_State.eSUPS_WaitForRecover:
+		IF fbShutdownTimer.Q THEN
+			eUPSState := E_UPSState.critical_error;
+		ELSE
+			eUPSState := E_UPSState.on_battery;
+		END_IF
+	Tc2_SUPS.E_S_UPS_State.eSUPS_WaitForPowerOFF:
+		eUPSState := E_UPSState.critical_error;
+	Tc2_SUPS.E_S_UPS_State.eSUPS_QuickShutdown:
+		eUPSState := E_UPSState.critical_error;
+	ELSE
+		eUPSState := E_UPSState.init;
+END_CASE
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_SUPS_CX51x0">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SUPS_CX51x0.persist_data">
+      <LineId Id="30" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="25" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SUPS_CX51x0.shutdown">
+      <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SUPS_CX51x0.shutdown_delay.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SUPS_CX51x0.shutdown_delay.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SUPS_CX51x0.UPSState.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SUPS_CX51x0.watch_status">
+      <LineId Id="5" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="10" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="13" Count="2" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="32" Count="2" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="26" Count="1" />
+      <LineId Id="8" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_UPSState" Id="{d7b18eeb-eb7c-4fdd-ba7c-7b6c9ac66e6c}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_UPSState :
+(
+	init := 0,		// UPS not working
+	on_power,		// power supplied normally
+	on_battery,		// continue working on battery
+	critical_error,	// system shutdown
+	facility_error	// UPC failure
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

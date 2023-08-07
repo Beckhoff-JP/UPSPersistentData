@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_ShutdownMode" Id="{1ce0b750-ac64-4a5c-a3c8-07635e99002c}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_ShutdownMode :
+(
+	init := 0,			// system is working
+	persistent_data,	// persist data
+	shutting_down		// system shutting down
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

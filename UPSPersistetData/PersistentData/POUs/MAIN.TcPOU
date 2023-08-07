@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{3439cf08-9e7a-47a5-a9ff-46ff00f18327}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	fbShutdown	:FB_ShutDown; // Safely shutdown feature
+	fbUPS		:FB_SUPS_CX51x0; // UPS type for test use
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbUPS.shutdown_delay := T#3S;
+fbShutdown(fbUPS := fbUPS);
+]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="38" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="32" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

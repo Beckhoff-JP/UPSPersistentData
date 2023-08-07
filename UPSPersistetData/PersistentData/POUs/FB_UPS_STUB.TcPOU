@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_UPS_STUB" Id="{f8beab30-01cc-40c7-b2a7-658d7ed595f1}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_UPS_STUB IMPLEMENTS iUPS
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	eUPSState :E_UPSState;
+	tShutdownDelay	: TIME := T#5S;
+	test_timer :Tc2_Standard.TON;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="persist_data" Id="{31b2e3b0-a301-4fff-b03d-315c1277bef7}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD persist_data : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="shutdown" Id="{7b89aabf-1f3d-4f04-afa9-98f1042fbc14}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD shutdown : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="shutdown_delay" Id="{2b1f82ec-e073-472f-a673-cac9ec23088e}">
+      <Declaration><![CDATA[{warning 'add property implementation'}
+PROPERTY shutdown_delay : TIME
+]]></Declaration>
+      <Get Name="Get" Id="{a264f190-c91a-4a51-bf4b-824389fe71aa}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[shutdown_delay := tShutdownDelay;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{4777ceaf-18ca-4933-8f7d-293894b8d609}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[tShutdownDelay := shutdown_delay;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="UPSState" Id="{54b7a120-7be4-40bb-9128-9de12244ea4b}">
+      <Declaration><![CDATA[{warning 'add property implementation'}
+PROPERTY UPSState : E_UPSState
+]]></Declaration>
+      <Get Name="Get" Id="{8bfda4c0-467b-45b4-8d53-7fd29aeeb8cd}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[UPSState := eUPSState;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="watch_status" Id="{a9c88e17-4cde-46fc-a941-dc36c9ca2fc7}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD watch_status : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF eUPSState = E_UPSState.on_battery THEN
+	test_timer.PT := tShutdownDelay;
+ELSE
+	test_timer.PT := T#15S;
+END_IF
+
+test_timer(IN := NOT test_timer.Q);
+
+IF test_timer.Q THEN
+	CASE eUPSState OF
+		E_UPSState.init:
+			eUPSState := E_UPSState.on_power;
+		E_UPSState.on_power:
+			eUPSState := E_UPSState.on_battery;
+		E_UPSState.critical_error:
+			eUPSState := E_UPSState.init;
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_UPS_STUB">
+      <LineId Id="24" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UPS_STUB.persist_data">
+      <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UPS_STUB.shutdown">
+      <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UPS_STUB.shutdown_delay.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UPS_STUB.shutdown_delay.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UPS_STUB.UPSState.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UPS_STUB.watch_status">
+      <LineId Id="30" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="18" Count="3" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="4" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
